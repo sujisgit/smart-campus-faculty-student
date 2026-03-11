@@ -54,7 +54,7 @@ const getEnvVars = () => {
   }
 
   // Default: Use development URL
-  console.log("⚙️  Defaulting to localhost:5000");
+  console.log("⚙️ Defaulting to localhost:5000");
   return ENV.dev;
 };
 
