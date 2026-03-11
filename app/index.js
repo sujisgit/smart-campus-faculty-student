@@ -1,17 +1,28 @@
 import { useRouter } from "expo-router";
-import { Button, Text, View } from "react-native";
+import { useEffect } from "react";
+import { ActivityIndicator, View } from "react-native";
 
-export default function Home() {
+export default function Index() {
   const router = useRouter();
 
-  return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text>Smart Campus App</Text>
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      router.replace("/(auth)/login");
+    }, 0);
 
-      <Button
-        title="Go to Event Registration"
-        onPress={() => router.push("/event-registration")}
-      />
+    return () => clearTimeout(timer);
+  }, [router]);
+
+  return (
+    <View
+      style={{
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "#f5f5f5",
+      }}
+    >
+      <ActivityIndicator size="large" color="#007AFF" />
     </View>
   );
 }

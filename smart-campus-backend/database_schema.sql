@@ -67,6 +67,19 @@ CREATE TABLE IF NOT EXISTS faculty (
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Users Table (Authentication)
+CREATE TABLE IF NOT EXISTS users (
+  id SERIAL PRIMARY KEY,
+  email VARCHAR(255) NOT NULL UNIQUE,
+  password_hash VARCHAR(255) NOT NULL,
+  user_type VARCHAR(50) NOT NULL DEFAULT 'faculty', -- faculty, student, admin
+  faculty_id VARCHAR(50),
+  is_verified BOOLEAN DEFAULT FALSE,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (faculty_id) REFERENCES faculty(id)
+);
+
 -- Complaints Table
 CREATE TABLE IF NOT EXISTS complaints (
   id SERIAL PRIMARY KEY,
@@ -117,3 +130,4 @@ CREATE INDEX IF NOT EXISTS idx_facility_bookings_email ON facility_bookings(emai
 CREATE INDEX IF NOT EXISTS idx_faculty_department ON faculty(department);
 CREATE INDEX IF NOT EXISTS idx_complaints_email ON complaints(email);
 CREATE INDEX IF NOT EXISTS idx_notifications_user_email ON notifications(user_email);
+CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);

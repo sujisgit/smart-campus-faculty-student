@@ -60,6 +60,12 @@ apiClient.interceptors.response.use(
  * API Methods
  */
 
+// AUTH
+export const authAPI = {
+  login: (data) => apiClient.post("/login", data),
+  register: (data) => apiClient.post("/register", data),
+};
+
 // ANNOUNCEMENTS
 export const announcementAPI = {
   getAll: () => apiClient.get("/announcements"),
