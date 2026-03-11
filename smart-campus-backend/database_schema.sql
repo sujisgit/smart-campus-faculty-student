@@ -67,17 +67,21 @@ CREATE TABLE IF NOT EXISTS faculty (
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Users Table (Authentication)
-CREATE TABLE IF NOT EXISTS users (
+-- Users Table (Authentication + Profile)
+DROP TABLE IF EXISTS users;
+
+CREATE TABLE users (
   id SERIAL PRIMARY KEY,
+  full_name VARCHAR(255) NOT NULL,
   email VARCHAR(255) NOT NULL UNIQUE,
+  phone VARCHAR(20),
+  department VARCHAR(100),
+  designation VARCHAR(100),
   password_hash VARCHAR(255) NOT NULL,
-  user_type VARCHAR(50) NOT NULL DEFAULT 'faculty', -- faculty, student, admin
-  faculty_id VARCHAR(50),
+  user_type VARCHAR(50) DEFAULT 'faculty',
   is_verified BOOLEAN DEFAULT FALSE,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (faculty_id) REFERENCES faculty(id)
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Complaints Table

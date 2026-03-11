@@ -118,7 +118,7 @@ const addFaculty = async (req, res) => {
   }
 };
 
-// Register endpoint - creates new user and faculty account
+// Register endpoint - creates new user account
 const register = async (req, res) => {
   try {
     const { name, email, phone, department, designation, password } = req.body;
@@ -144,43 +144,19 @@ const register = async (req, res) => {
       });
     }
 
-    // Check if email already exists in faculty table
-    const existingFaculty = await pool.query(
-      "SELECT id FROM faculty WHERE email = $1",
-      [email],
-    );
-
-    if (existingFaculty.rows.length > 0) {
-      return res.status(400).json({
-        success: false,
-        error: "Email already exists in faculty database",
-      });
-    }
-
-    // Create faculty record first
-    const facultyId = "FAC-" + uuidv4().slice(0, 8);
-    const facultyResult = await pool.query(
-      "INSERT INTO faculty(id, name, email, phone, department, designation) VALUES($1, $2, $3, $4, $5, $6) RETURNING id, name, email, department, designation",
-      [facultyId, name, email, phone, department, designation],
-    );
-
     // Hash password with bcrypt
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create user record linked to faculty
+    // Create user record
     const userResult = await pool.query(
-      "INSERT INTO users(email, password_hash, user_type, faculty_id) VALUES($1, $2, $3, $4) RETURNING id, email, user_type",
-      [email, hashedPassword, "faculty", facultyId],
+      "INSERT INTO users(full_name, email, phone, department, designation, password_hash, user_type) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING id, full_name, email, department, designation, user_type",
+      [name, email, phone, department, designation, hashedPassword, "faculty"],
     );
 
     res.json({
       success: true,
       message: "Registration successful. You can now login.",
-      data: {
-        id: userResult.rows[0].id,
-        email: userResult.rows[0].email,
-        faculty: facultyResult.rows[0],
-      },
+      data: userResult.rows[0],
     });
   } catch (error) {
     console.error("DATABASE ERROR:", error);
@@ -202,7 +178,7 @@ const login = async (req, res) => {
 
     // Check if user exists in users table
     const userResult = await pool.query(
-      "SELECT id, email, password_hash, user_type, faculty_id FROM users WHERE email = $1",
+      "SELECT id, full_name, email, password_hash, user_type, department, designation, phone FROM users WHERE email = $1",
       [email],
     );
 
@@ -225,27 +201,18 @@ const login = async (req, res) => {
       });
     }
 
-    // Get faculty information if user is faculty
-    let facultyInfo = null;
-    if (user.faculty_id) {
-      const facultyResult = await pool.query(
-        "SELECT id, name, email, department, designation, phone FROM faculty WHERE id = $1",
-        [user.faculty_id],
-      );
-      if (facultyResult.rows.length > 0) {
-        facultyInfo = facultyResult.rows[0];
-      }
-    }
-
-    // Return user info with faculty data (you can add JWT token later)
+    // Return user info
     res.json({
       success: true,
       message: "Login successful",
       data: {
         userId: user.id,
+        fullName: user.full_name,
         email: user.email,
         userType: user.user_type,
-        faculty: facultyInfo,
+        department: user.department,
+        designation: user.designation,
+        phone: user.phone,
       },
     });
   } catch (error) {
