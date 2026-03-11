@@ -6,13 +6,21 @@
     "orientation": "portrait",
     "extra": {
       "environment": "development",
-      "apiUrl": "https://smart-campus-connect-kwzr.onrender.com"
+      "apiUrl": "https://smart-campus-connect-kwzr.onrender.com",
+      "router": {},
+      "eas": {
+        "projectId": "548ba8a7-4ec9-472c-b3f2-8f85f38a5eec"
+      }
     },
     "icon": "./assets/images/icon.png",
     "scheme": "smartcampusconnect",
     "userInterfaceStyle": "automatic",
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.sujithaeas.SmartCampusConnect",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -21,7 +29,8 @@
         "backgroundImage": "./assets/images/android-icon-background.png",
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.sujithaeas.SmartCampusConnect"
     },
     "web": {
       "output": "static",
